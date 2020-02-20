@@ -12,8 +12,6 @@ import java.util.List;
 
 public class FromFileToDtoTrees {
 
-
-
     public
     static InputTaskDto getFromFile(String name) throws IOException {
         HashMap<Integer, Integer> books = new HashMap();
