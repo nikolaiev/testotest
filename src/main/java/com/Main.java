@@ -19,7 +19,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("a_example.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("b_read_on.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
@@ -32,7 +32,9 @@ public class Main {
             int iterationCount = 0;
 
             for (Library library : inputTaskDto.getLibraries()) {
+                if(iterationCount%100==0) {
                     log.info("IterCount {}", iterationCount);
+                }
                 final int bookPerDay = library.getBookPerDay();
                 final int signUpDays = library.getSignUpDays();
                 final int daysLeftASfteSignUp = totalDaysLeft - signUpDays;
@@ -54,22 +56,22 @@ public class Main {
                 iterationCount++;
             }
 
+            if (bestLib.libId==-1){
+                break;
+            }
             resultLibList.add(bestLib.libId);
 
 
             totalDaysLeft = totalDaysLeft - bestLib.signUpDay;
             inputTaskDto.getLibraries().removeIf(library -> library.getNumber() == bestLib.libId);
-
-
         }
-
+        log.info("Here");
         System.out.println(resultLibList);
-
 
     }
 
     static class BestLib {
-        int libId;
+        int libId =-1;
         long libScore;
         int signUpDay;
     }
