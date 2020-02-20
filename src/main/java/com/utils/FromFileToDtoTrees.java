@@ -12,10 +12,11 @@ import java.util.List;
 
 public class FromFileToDtoTrees {
 
-    public static HashMap<Integer, Integer> books = new HashMap();
+
 
     public
     static InputTaskDto getFromFile(String name) throws IOException {
+        HashMap<Integer, Integer> books = new HashMap();
         InputTaskDto result = new InputTaskDto();
         final List<String> inputFileLines = FileReaderWriter.readFile(name);
 
@@ -32,6 +33,7 @@ public class FromFileToDtoTrees {
         for (int i = 0; i < split1.length; i++) {
             books.put(i, Integer.valueOf(split1[i]));
         }
+        result.setBooksRateScore(books);
 
 
         //libs

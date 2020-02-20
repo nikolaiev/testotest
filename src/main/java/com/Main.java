@@ -1,5 +1,6 @@
 package com;
 
+import com.dto.InputTaskDto;
 import com.io.FileReaderWriter;
 import com.utils.FromFileToDtoTrees;
 
@@ -10,7 +11,8 @@ public class Main {
 
 
     public static void main(String[] args) throws IOException {
-        FromFileToDtoTrees.getFromFile("a_example.txt");
+        final InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("a_example.txt");
+
 
     }
 }
