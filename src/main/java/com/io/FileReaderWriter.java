@@ -1,5 +1,6 @@
 package com.io;
 
+import com.Main;
 import com.dto.InputTaskDto;
 import com.dto.Library;
 import org.apache.commons.io.FileUtils;
@@ -9,7 +10,6 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Stream;
 
 public class FileReaderWriter {
 
@@ -26,18 +26,19 @@ public class FileReaderWriter {
         }
     }
 
-    public static void writeToFile(List<Integer> resultLibList) {
+    public static void writeToFile(List<Main.BestLib> resultLibList) {
         File file = new File("output.txt");
         StringBuilder result = new StringBuilder();
         result.append(resultLibList.size())
                 .append(System.lineSeparator());
-        for (Integer libraryId : resultLibList) {
+        for (Main.BestLib bestLib : resultLibList) {
+            int libraryId =bestLib.libId;
             Library library = InputTaskDto.libsMap.get(libraryId);
             result.append(libraryId)
                     .append(" ")
-                    .append(library.getBooks().length)
+                    .append(bestLib.booksSubmittedList.length)
                     .append(System.lineSeparator());
-            result.append(Arrays.toString(library.getBooks()).replaceAll("[\\]\\[\\,]", ""))
+            result.append(Arrays.toString(bestLib.booksSubmittedList).replaceAll("[\\]\\[\\,]", ""))
             .append(System.lineSeparator());
         }
         try {

@@ -24,11 +24,11 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("c_incunabula.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("f_libraries_of_the_world.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
-        List<Integer> resultLibList = new LinkedList<>();
+        List<BestLib> resultLibList = new LinkedList<>();
 
         List<Library> libraries = inputTaskDto.getLibraries();
         while (totalDaysLeft > 0 && !libraries.isEmpty()) {
@@ -72,6 +72,8 @@ public class Main {
                         bestLib.libId = library.getNumber();
                         bestLib.signUpDay = library.getSignUpDays();
                         bestLib.libScore = totalRate;
+                        bestLib.booksSubmittedCount = possibleBookToProcess;
+                        bestLib.booksSubmittedList = books;
                     }
                 }
 
@@ -85,7 +87,7 @@ public class Main {
             booksProceeded.addAll(IntStream.of(InputTaskDto.libsMap.get(bestLib.libId).getBooks()).boxed()
                 .collect(Collectors.toCollection(HashSet::new)));
 
-            resultLibList.add(bestLib.libId);
+            resultLibList.add(bestLib);
 
             totalDaysLeft = totalDaysLeft - bestLib.signUpDay;
             libraries.removeIf(library -> library.getNumber() == bestLib.libId);
@@ -100,9 +102,11 @@ public class Main {
         FileReaderWriter.writeToFile(resultLibList);
     }
 
-    static class BestLib {
-        int libId = -1;
-        long libScore;
-        int signUpDay;
+    public static class BestLib {
+        public int libId = -1;
+        public long libScore;
+        public int signUpDay;
+        public int booksSubmittedCount;
+        public int [] booksSubmittedList;
     }
 }
