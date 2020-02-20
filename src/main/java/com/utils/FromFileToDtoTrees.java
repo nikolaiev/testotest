@@ -3,6 +3,7 @@ package com.utils;
 import com.dto.InputTaskDto;
 import com.dto.Library;
 import com.io.FileReaderWriter;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -10,10 +11,8 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
-import java.util.stream.Stream;
 
-import static java.util.stream.Collectors.toList;
-
+@Slf4j
 public class FromFileToDtoTrees {
 
     public
@@ -44,6 +43,8 @@ public class FromFileToDtoTrees {
         List<Library> listLibs = new ArrayList<>();
         while (libCounter < librariesCountTotal) {
 
+            System.out.println("Libs left " + listLibs.size());
+
             Library library = new Library();
             final String[] split2 = inputFileLines.get(libDescLineNum).split("\\s");//
             final Integer booksCount = Integer.valueOf(split2[0]);
@@ -53,6 +54,7 @@ public class FromFileToDtoTrees {
 
             final String[] bookRatesString = inputFileLines.get(libDescLineNum + 1).split("\\s");
             //take bookId
+            log.info("BeforeCompare");
             final int[] sortedBookIds = Arrays.stream(bookRatesString)
                 .sorted(new Comparator<String>() {
                     @Override
@@ -60,12 +62,14 @@ public class FromFileToDtoTrees {
                         return booksRates.get(Integer.valueOf(o2)) - booksRates.get(Integer.valueOf(o1));
                     }
                 })
-                    .mapToInt(Integer::valueOf).toArray();
+                .mapToInt(Integer::valueOf).toArray();
+            log.info("AfterCompare");
+
 
             library.setBooks(sortedBookIds);
             library.setNumber(libCounter);
             listLibs.add(library);
-            InputTaskDto.libsMap.put(library.getNumber(),library);
+            InputTaskDto.libsMap.put(library.getNumber(), library);
             libDescLineNum += 2;
             libCounter++;
 

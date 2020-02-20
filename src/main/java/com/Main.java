@@ -15,8 +15,8 @@ public class Main {
     HashSet<Integer> booksProceeded = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
-
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("e_so_many_books.txt");
+        System.out.println("here");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("d_tough_choices.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
@@ -33,6 +33,8 @@ public class Main {
             BestLib bestLib = new BestLib();
             int iterationCount = 0;
 
+            System.out.println("Here Libs left real"+ libraries.size());
+
             for (Library library : libraries) {
                 if(iterationCount%100==0) {
                     log.info("IterCount {}", iterationCount);
@@ -44,8 +46,8 @@ public class Main {
 
                 } else {
                     //process
-                    final int possibleBookToProcess = daysLeftASfteSignUp * bookPerDay;
-                    final int[] bookWillBeProceeded = Arrays.copyOfRange(library.getBooks(), 0, possibleBookToProcess - 1);
+                    int possibleBookToProcess = daysLeftASfteSignUp * bookPerDay;
+                    final int[] bookWillBeProceeded = library.getBooks();
                     final long totalRate = Arrays.stream(bookWillBeProceeded).mapToLong(booksRateScore::get).sum();
 
                     if (totalRate > bestLib.libScore) {
@@ -66,7 +68,8 @@ public class Main {
 
             totalDaysLeft = totalDaysLeft - bestLib.signUpDay;
             libraries.removeIf(library -> library.getNumber() == bestLib.libId);
-
+            log.info("removedLib");
+            log.info("Libs left {}", libraries.size());
 
         }
         log.info("Here");
