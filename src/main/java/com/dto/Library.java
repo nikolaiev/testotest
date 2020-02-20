@@ -12,7 +12,7 @@ public class Library {
     int signUpDays;
     int bookPerDay;
 
-    List<Book> books;
+    int[] books;
 
 
 }
