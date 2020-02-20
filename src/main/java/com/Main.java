@@ -50,13 +50,19 @@ public class Main {
 
                 } else {
                     //process
+                    log.info("point1");
                     int possibleBookToProcess = daysLeftASfteSignUp * bookPerDay;
                     if (possibleBookToProcess <= 0) {
-                        possibleBookToProcess = library.getBooksCount() - 1;
+                        possibleBookToProcess = library.getBooks().length - 1;
+                    }
+                    if(possibleBookToProcess>library.getBooks().length-1){
+                        possibleBookToProcess = library.getBooks().length-1;
                     }
 
-                    final int[] books = Arrays.copyOfRange(library.getBooks(), 0, possibleBookToProcess);
+                    final int[] books = new int[possibleBookToProcess];
+                    System.arraycopy(library.getBooks(), 0, books, 0, possibleBookToProcess);
                     LinkedHashSet<Integer> collect = IntStream.of(books).boxed().collect(Collectors.toCollection(LinkedHashSet::new));
+                    log.info("point2");
                     collect.removeAll(booksProceeded);
                     final int[] bookWillBeProceeded = collect.stream().mapToInt(Number::intValue).toArray();
 
