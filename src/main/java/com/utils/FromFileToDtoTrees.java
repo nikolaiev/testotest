@@ -7,14 +7,18 @@ import com.io.FileReaderWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Stream;
+
+import static java.util.stream.Collectors.toList;
 
 public class FromFileToDtoTrees {
 
     public
     static InputTaskDto getFromFile(String name) throws IOException {
-        HashMap<Integer, Integer> books = new HashMap();
+        HashMap<Integer, Integer> booksRates = new HashMap();
         InputTaskDto result = new InputTaskDto();
         final List<String> inputFileLines = FileReaderWriter.readFile(name);
 
@@ -29,9 +33,9 @@ public class FromFileToDtoTrees {
         final String ratesBooks = inputFileLines.get(1);
         final String[] split1 = ratesBooks.split("\\s");
         for (int i = 0; i < split1.length; i++) {
-            books.put(i, Integer.valueOf(split1[i]));
+            booksRates.put(i, Integer.valueOf(split1[i]));
         }
-        result.setBooksRateScore(books);
+        result.setBooksRateScore(booksRates);
 
 
         //libs
@@ -47,10 +51,18 @@ public class FromFileToDtoTrees {
             library.setSignUpDays(Integer.valueOf(split2[1]));
             library.setBookPerDay(Integer.valueOf(split2[2]));
 
-            final int[] objects = Arrays.stream(inputFileLines.get(libDescLineNum + 1).split("\\s"))
-                .mapToInt(i -> Integer.valueOf(i)).toArray();//
+            final String[] bookRatesString = inputFileLines.get(libDescLineNum + 1).split("\\s");
+            //take bookId
+            final int[] sortedBookIds = Arrays.stream(bookRatesString)
+                .sorted(new Comparator<String>() {
+                    @Override
+                    public int compare(String o1, String o2) {
+                        return booksRates.get(Integer.valueOf(o2)) - booksRates.get(Integer.valueOf(o1));
+                    }
+                })
+                    .mapToInt(Integer::valueOf).toArray();
 
-            library.setBooks(objects);
+            library.setBooks(sortedBookIds);
             library.setNumber(libCounter);
             listLibs.add(library);
             libDescLineNum += 2;
