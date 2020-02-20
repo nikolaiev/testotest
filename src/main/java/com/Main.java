@@ -7,16 +7,19 @@ import com.utils.FromFileToDtoTrees;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
-
-import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 public class Main {
 
-    static  HashSet<Integer> booksProceeded = new HashSet<>();
+    static HashSet<Integer> booksProceeded = new HashSet<>();
 
 
     public static void main(String[] args) throws IOException {
@@ -34,10 +37,10 @@ public class Main {
             BestLib bestLib = new BestLib();
             int iterationCount = 0;
 
-            System.out.println("Here Libs left real"+ libraries.size());
+            System.out.println("Here Libs left real" + libraries.size());
 
             for (Library library : libraries) {
-                if(iterationCount%100==0) {
+                if (iterationCount % 100 == 0) {
                     log.info("IterCount {}", iterationCount);
                 }
                 final int bookPerDay = library.getBookPerDay();
@@ -48,9 +51,14 @@ public class Main {
                 } else {
                     //process
                     int possibleBookToProcess = daysLeftASfteSignUp * bookPerDay;
-                    LinkedHashSet<Integer> collect = IntStream.of(library.getBooks()).boxed().collect( Collectors.toCollection( LinkedHashSet::new ) );
+                    if (possibleBookToProcess <= 0) {
+                        possibleBookToProcess = library.getBooksCount() - 1;
+                    }
+
+                    final int[] books = Arrays.copyOfRange(library.getBooks(), 0, possibleBookToProcess);
+                    LinkedHashSet<Integer> collect = IntStream.of(books).boxed().collect(Collectors.toCollection(LinkedHashSet::new));
                     collect.removeAll(booksProceeded);
-                        final int[] bookWillBeProceeded = collect.stream().mapToInt(Number::intValue).toArray();
+                    final int[] bookWillBeProceeded = collect.stream().mapToInt(Number::intValue).toArray();
 
                     final long totalRate = Arrays.stream(bookWillBeProceeded).mapToLong(booksRateScore::get).sum();
 
@@ -71,7 +79,7 @@ public class Main {
             booksProceeded.addAll(IntStream.of(InputTaskDto.libsMap.get(bestLib.libId).getBooks()).boxed()
                 .collect(Collectors.toCollection(HashSet::new)));
 
-                resultLibList.add(bestLib.libId);
+            resultLibList.add(bestLib.libId);
 
             totalDaysLeft = totalDaysLeft - bestLib.signUpDay;
             libraries.removeIf(library -> library.getNumber() == bestLib.libId);
