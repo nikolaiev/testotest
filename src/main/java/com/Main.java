@@ -2,15 +2,12 @@ package com;
 
 import com.dto.InputTaskDto;
 import com.dto.Library;
+import com.io.FileReaderWriter;
 import com.utils.FromFileToDtoTrees;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 @Slf4j
 public class Main {
@@ -24,15 +21,20 @@ public class Main {
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
         List<Integer> resultLibList = new LinkedList<>();
-        //TODO one more loop
-        while (totalDaysLeft > 0 && !inputTaskDto.getLibraries().isEmpty()) {
+
+
+
+
+
+        List<Library> libraries = inputTaskDto.getLibraries();
+        while (totalDaysLeft > 0 && !libraries.isEmpty()) {
 
 
             BestLib bestLib = new BestLib();
             int iterationCount = 0;
 
-            for (Library library : inputTaskDto.getLibraries()) {
-                if (iterationCount % 100 == 0) {
+            for (Library library : libraries) {
+                if(iterationCount%100==0) {
                     log.info("IterCount {}", iterationCount);
                 }
                 final int bookPerDay = library.getBookPerDay();
@@ -63,11 +65,15 @@ public class Main {
 
 
             totalDaysLeft = totalDaysLeft - bestLib.signUpDay;
-            inputTaskDto.getLibraries().removeIf(library -> library.getNumber() == bestLib.libId);
+            libraries.removeIf(library -> library.getNumber() == bestLib.libId);
+
+
         }
         log.info("Here");
         System.out.println(resultLibList);
 
+
+        FileReaderWriter.writeToFile(resultLibList);
     }
 
     static class BestLib {
