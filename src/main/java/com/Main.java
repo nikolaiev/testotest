@@ -8,11 +8,16 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
+
+import static java.util.stream.Collectors.toSet;
 
 @Slf4j
 public class Main {
 
-    HashSet<Integer> booksProceeded = new HashSet<>();
+    static  HashSet<Integer> booksProceeded = new HashSet<>();
+
 
     public static void main(String[] args) throws IOException {
 
@@ -21,10 +26,6 @@ public class Main {
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
         List<Integer> resultLibList = new LinkedList<>();
-
-
-
-
 
         List<Library> libraries = inputTaskDto.getLibraries();
         while (totalDaysLeft > 0 && !libraries.isEmpty()) {
@@ -47,7 +48,10 @@ public class Main {
                 } else {
                     //process
                     int possibleBookToProcess = daysLeftASfteSignUp * bookPerDay;
-                    final int[] bookWillBeProceeded = library.getBooks();
+                    LinkedHashSet<Integer> collect = IntStream.of(library.getBooks()).boxed().collect( Collectors.toCollection( LinkedHashSet::new ) );
+                    collect.removeAll(booksProceeded);
+                        final int[] bookWillBeProceeded = collect.stream().mapToInt(Number::intValue).toArray();
+
                     final long totalRate = Arrays.stream(bookWillBeProceeded).mapToLong(booksRateScore::get).sum();
 
                     if (totalRate > bestLib.libScore) {
@@ -63,8 +67,11 @@ public class Main {
             if (bestLib.libId == -1) {
                 break;
             }
-            resultLibList.add(bestLib.libId);
 
+            booksProceeded.addAll(IntStream.of(InputTaskDto.libsMap.get(bestLib.libId).getBooks()).boxed()
+                .collect(Collectors.toCollection(HashSet::new)));
+
+                resultLibList.add(bestLib.libId);
 
             totalDaysLeft = totalDaysLeft - bestLib.signUpDay;
             libraries.removeIf(library -> library.getNumber() == bestLib.libId);
