@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("f_libraries_of_the_world.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("c_incunabula.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
@@ -40,12 +40,13 @@ public class Main {
             System.out.println("Here Libs left real" + libraries.size());
 
             for (Library library : libraries) {
-                if (iterationCount % 100 == 0) {
-                    log.info("IterCount {}", iterationCount);
-                }
+//                if (iterationCount % 1000 == 0) {
+//                    System.out.println("IterCount " + iterationCount);
+//                }
                 final int bookPerDay = library.getBookPerDay();
                 final int signUpDays = library.getSignUpDays();
                 final int daysLeftASfteSignUp = totalDaysLeft - signUpDays;
+
                 if (daysLeftASfteSignUp <= 0) {
 
                 } else {
@@ -55,8 +56,8 @@ public class Main {
                     if (possibleBookToProcess <= 0) {
                         possibleBookToProcess = library.getBooks().length - 1;
                     }
-                    if(possibleBookToProcess>library.getBooks().length-1){
-                        possibleBookToProcess = library.getBooks().length-1;
+                    if (possibleBookToProcess > library.getBooks().length - 1) {
+                        possibleBookToProcess = library.getBooks().length - 1;
                     }
 
                     final int[] books = new int[possibleBookToProcess];
@@ -67,18 +68,24 @@ public class Main {
                     final int[] bookWillBeProceeded = collect.stream().mapToInt(Number::intValue).toArray();
 
                     final long totalRate = Arrays.stream(bookWillBeProceeded).mapToLong(booksRateScore::get).sum();
-
-                    if (totalRate > bestLib.libScore) {
+//                    System.out.println("Total Rate = " + totalRate );
+//                    System.out.println("Days to wait = " + signUpDays );
+//                    System.out.println("\n");
+                    if (/*totalRate > bestLib.libScore
+                        || totalRate == bestLib.libScore && */bestLib.libSignUpDays > signUpDays) {
                         bestLib.libId = library.getNumber();
                         bestLib.signUpDay = library.getSignUpDays();
                         bestLib.libScore = totalRate;
                         bestLib.booksSubmittedCount = possibleBookToProcess;
                         bestLib.booksSubmittedList = books;
+                        bestLib.libSignUpDays = signUpDays;
                     }
                 }
 
                 iterationCount++;
             }
+
+            System.out.println();
 
             if (bestLib.libId == -1) {
                 break;
@@ -105,8 +112,9 @@ public class Main {
     public static class BestLib {
         public int libId = -1;
         public long libScore;
+        public long libSignUpDays = Long.MAX_VALUE;
         public int signUpDay;
         public int booksSubmittedCount;
-        public int [] booksSubmittedList;
+        public int[] booksSubmittedList;
     }
 }
