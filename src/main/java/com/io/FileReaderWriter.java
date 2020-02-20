@@ -10,7 +10,7 @@ import java.util.List;
 public class FileReaderWriter {
 
     public static List<String> readFile(String path) throws IOException {
-        File file = new File("demo.txt");
+        File file = new File(path);
 
         try {
             return FileUtils.readLines(file, StandardCharsets.UTF_8);
