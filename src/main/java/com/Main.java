@@ -15,8 +15,8 @@ public class Main {
     HashSet<Integer> booksProceeded = new HashSet<>();
 
     public static void main(String[] args) throws IOException {
-        System.out.println("here");
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("d_tough_choices.txt");
+
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("c_incunabula.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
