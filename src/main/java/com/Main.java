@@ -32,7 +32,7 @@ public class Main {
             int iterationCount = 0;
 
             for (Library library : inputTaskDto.getLibraries()) {
-                if(iterationCount%100==0) {
+                if (iterationCount % 100 == 0) {
                     log.info("IterCount {}", iterationCount);
                 }
                 final int bookPerDay = library.getBookPerDay();
@@ -56,7 +56,7 @@ public class Main {
                 iterationCount++;
             }
 
-            if (bestLib.libId==-1){
+            if (bestLib.libId == -1) {
                 break;
             }
             resultLibList.add(bestLib.libId);
@@ -71,7 +71,7 @@ public class Main {
     }
 
     static class BestLib {
-        int libId =-1;
+        int libId = -1;
         long libScore;
         int signUpDay;
     }

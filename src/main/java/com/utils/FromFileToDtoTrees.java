@@ -65,6 +65,7 @@ public class FromFileToDtoTrees {
             library.setBooks(sortedBookIds);
             library.setNumber(libCounter);
             listLibs.add(library);
+            InputTaskDto.libsMap.put(library.getNumber(),library);
             libDescLineNum += 2;
             libCounter++;
 
