@@ -16,7 +16,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("b_read_on.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("e_so_many_books.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
