@@ -7,6 +7,7 @@ import com.utils.FromFileToDtoTrees;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -24,7 +25,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("c_incunabula.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("d_tough_choices.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
@@ -35,57 +36,44 @@ public class Main {
 
 
             BestLib bestLib = new BestLib();
-            int iterationCount = 0;
 
             System.out.println("Here Libs left real" + libraries.size());
 
             for (Library library : libraries) {
-//                if (iterationCount % 1000 == 0) {
-//                    System.out.println("IterCount " + iterationCount);
-//                }
                 final int bookPerDay = library.getBookPerDay();
                 final int signUpDays = library.getSignUpDays();
-                final int daysLeftASfteSignUp = totalDaysLeft - signUpDays;
+                final int daysLeftAfteSignUp = totalDaysLeft - signUpDays;
 
-                if (daysLeftASfteSignUp <= 0) {
-
-                } else {
+                if (daysLeftAfteSignUp > 0) {
                     //process
-                    log.info("point1");
-                    int possibleBookToProcess = daysLeftASfteSignUp * bookPerDay;
+                    int possibleBookToProcess = daysLeftAfteSignUp * bookPerDay;
                     if (possibleBookToProcess <= 0) {
                         possibleBookToProcess = library.getBooks().length - 1;
                     }
-                    if (possibleBookToProcess > library.getBooks().length - 1) {
-                        possibleBookToProcess = library.getBooks().length - 1;
+                    LinkedHashSet<Integer> libraryBooksIds =
+                        IntStream.of(library.getBooks()).boxed().collect(Collectors.toCollection(LinkedHashSet::new));
+                    libraryBooksIds.removeAll(booksProceeded);
+                    if (possibleBookToProcess > libraryBooksIds.size()) {
+                        possibleBookToProcess = libraryBooksIds.size();
                     }
 
-                    final int[] books = new int[possibleBookToProcess];
-                    System.arraycopy(library.getBooks(), 0, books, 0, possibleBookToProcess);
-                    LinkedHashSet<Integer> collect = IntStream.of(books).boxed().collect(Collectors.toCollection(LinkedHashSet::new));
-                    log.info("point2");
-                    collect.removeAll(booksProceeded);
-                    final int[] bookWillBeProceeded = collect.stream().mapToInt(Number::intValue).toArray();
+                    List<Integer> booksIds = new ArrayList<>(libraryBooksIds).subList(0, possibleBookToProcess);
+//                    final long totalRate = booksIds.stream().map(booksRateScore::get).mapToInt(Integer::intValue).sum();
+                    final long totalRate = 1; //for d_tought_choise
 
-                    final long totalRate = Arrays.stream(bookWillBeProceeded).mapToLong(booksRateScore::get).sum();
-//                    System.out.println("Total Rate = " + totalRate );
-//                    System.out.println("Days to wait = " + signUpDays );
-//                    System.out.println("\n");
-                    if (/*totalRate > bestLib.libScore
-                        || totalRate == bestLib.libScore && */bestLib.libSignUpDays > signUpDays) {
+                    //if (booksIds.size() > bestLib.booksSubmittedCount) //d_tought_choise
+                    //if (bestLib.signUpDay > signUpDays) //c_incunabula
+                    //if (totalRate > bestLib.libScore || totalRate == bestLib.libScore && bestLib.signUpDay > signUpDays) //b_read_on
+
+                    if( booksIds.size() > bestLib.booksSubmittedCount) {
                         bestLib.libId = library.getNumber();
-                        bestLib.signUpDay = library.getSignUpDays();
+                        bestLib.signUpDay = signUpDays;
                         bestLib.libScore = totalRate;
-                        bestLib.booksSubmittedCount = possibleBookToProcess;
-                        bestLib.booksSubmittedList = books;
-                        bestLib.libSignUpDays = signUpDays;
+                        bestLib.booksSubmittedCount = booksIds.size();
+                        bestLib.booksSubmittedList = booksIds.stream().mapToInt(Number::intValue).toArray();
                     }
                 }
-
-                iterationCount++;
             }
-
-            System.out.println();
 
             if (bestLib.libId == -1) {
                 break;
@@ -111,10 +99,9 @@ public class Main {
 
     public static class BestLib {
         public int libId = -1;
-        public long libScore;
-        public long libSignUpDays = Long.MAX_VALUE;
-        public int signUpDay;
-        public int booksSubmittedCount;
+        public long libScore = 0;
+        public int signUpDay = Integer.MAX_VALUE;
+        public long booksSubmittedCount;
         public int[] booksSubmittedList;
     }
 }
