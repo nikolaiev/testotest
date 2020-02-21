@@ -24,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("c_incunabula.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("f_libraries_of_the_world.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
@@ -57,14 +57,13 @@ public class Main {
                     }
 
                     List<Integer> booksIds = new ArrayList<>(libraryBooksIds).subList(0, possibleBookToProcess);
-//                    final long totalRate = booksIds.stream().map(booksRateScore::get).mapToInt(Integer::intValue).sum();
-                    final long totalRate = 1; //for d_tought_choise
+                    long totalRate = booksIds.stream().map(booksRateScore::get).mapToInt(Integer::intValue).sum();
 
                     //if (totalRate > bestLib.libScore || totalRate == bestLib.libScore && bestLib.signUpDay > signUpDays) //b_read_on
-                    //if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) //c_incunabula
-                    //if (bestLib.signUpDay >= signUpDays && booksIds.size() >= bestLib.booksSubmittedCount && totalRate >= bestLib.libScore) //d_tought_choise
-                    //if (bestLib.signUpDay >= signUpDays && booksIds.size() >= bestLib.booksSubmittedCount && totalRate >= bestLib.libScore) //f_libraries_of_the_world.txt
-                    //if (bestLib.signUpDay >= signUpDays && booksIds.size() >= bestLib.booksSubmittedCount && totalRate >= bestLib.libScore) //e_so_many_books.txt
+                    //if (bestLib.signUpDay >= signUpDays) //c_incunabula
+                    //if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) //d_tought_choise
+                    //if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) //f_libraries_of_the_world.txt
+                    //if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) //e_so_many_books.txt
 
                     if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) {
                         bestLib.libId = library.getNumber();
