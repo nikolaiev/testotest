@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
@@ -25,7 +24,7 @@ public class Main {
 
     public static void main(String[] args) throws IOException {
 
-        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("d_tough_choices.txt");
+        InputTaskDto inputTaskDto = FromFileToDtoTrees.getFromFile("c_incunabula.txt");
         final HashMap<Integer, Integer> booksRateScore = inputTaskDto.getBooksRateScore();
         int totalDaysLeft = inputTaskDto.getDaysToScan(); //1000
 
@@ -61,11 +60,13 @@ public class Main {
 //                    final long totalRate = booksIds.stream().map(booksRateScore::get).mapToInt(Integer::intValue).sum();
                     final long totalRate = 1; //for d_tought_choise
 
-                    //if (booksIds.size() > bestLib.booksSubmittedCount) //d_tought_choise
-                    //if (bestLib.signUpDay > signUpDays) //c_incunabula
                     //if (totalRate > bestLib.libScore || totalRate == bestLib.libScore && bestLib.signUpDay > signUpDays) //b_read_on
+                    //if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) //c_incunabula
+                    //if (bestLib.signUpDay >= signUpDays && booksIds.size() >= bestLib.booksSubmittedCount && totalRate >= bestLib.libScore) //d_tought_choise
+                    //if (bestLib.signUpDay >= signUpDays && booksIds.size() >= bestLib.booksSubmittedCount && totalRate >= bestLib.libScore) //f_libraries_of_the_world.txt
+                    //if (bestLib.signUpDay >= signUpDays && booksIds.size() >= bestLib.booksSubmittedCount && totalRate >= bestLib.libScore) //e_so_many_books.txt
 
-                    if( booksIds.size() > bestLib.booksSubmittedCount) {
+                    if (bestLib.signUpDay >= signUpDays && totalRate >= bestLib.libScore) {
                         bestLib.libId = library.getNumber();
                         bestLib.signUpDay = signUpDays;
                         bestLib.libScore = totalRate;
